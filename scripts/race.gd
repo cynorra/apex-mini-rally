@@ -155,8 +155,8 @@ func _build_world() -> void :
 	points = info["points"]
 	var lo: Vector3 = info["lo"]; var hi: Vector3 = info["hi"]
 	var plane: = StaticBody3D.new(); var cs: = CollisionShape3D.new(); var box: = BoxShape3D.new()
-	box.size = Vector3(hi.x - lo.x + 40, 0, hi.z - lo.z + 40);cs.shape = box
-	plane.position = Vector3((lo.x + hi.x) / 2, -0.02, (lo.z + hi.z) / 2)
+	box.size = Vector3(hi.x - lo.x + 60, 2.0, hi.z - lo.z + 60);cs.shape = box
+	plane.position = Vector3((lo.x + hi.x) / 2, -1.0, (lo.z + hi.z) / 2)
 	plane.add_child(cs);add_child(plane)
 	if track_def.get("obstacles", false): _build_obstacles(info)
 	pickups = Pickups.new();add_child(pickups);pickups.build(self, info)

@@ -40,7 +40,7 @@ IAP="*res://scripts/iap.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/stretch/mode="canvas_items"
+window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
 
@@ -102,9 +102,5 @@ common/physics_interpolation=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
-environment/ssao/quality=3
-environment/ssao/half_size=false
-environment/ssao/fadeout_from=500.0
-environment/ssao/fadeout_to=2000.0
-anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/msaa_3d=0
+anti_aliasing/quality/msaa_3d.mobile=0
