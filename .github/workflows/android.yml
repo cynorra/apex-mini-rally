@@ -63,21 +63,29 @@ jobs:
 
       - name: Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          else
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/upload.jks" -alias upload -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=ApexMiniRally, OU=Cynorra, O=Cynorra, L=Istanbul, ST=Istanbul, C=TR"
+          fi
 
-      - name: Export release AAB
+      - name: Inject CI version code
+        run: |
+          sed -i "s/version\/code=1/version\/code=$GITHUB_RUN_NUMBER/g" export_presets.cfg
+
+      - name: Export release AAB and APK
         env:
           GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ runner.temp }}/upload.jks
           GODOT_ANDROID_KEYSTORE_RELEASE_USER: upload
-          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD || 'android' }}
         run: |
           mkdir -p build
-          godot --headless --export-release "Android" build/tiny-track-rally.aab
-          godot --headless --export-release "Android APK" build/tiny-track-rally.apk
+          godot --headless --export-release "Android" build/apex-mini-rally.aab
+          godot --headless --export-release "Android APK" build/apex-mini-rally.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tiny-track-rally
+          name: apex-mini-rally
           path: |
             build/*.aab
             build/*.apk

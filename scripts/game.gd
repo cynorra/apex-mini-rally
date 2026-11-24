@@ -19,19 +19,20 @@ const TRACKS: = [
 	{"id": "grand", "name": "Grand Canyon GP", "start": Vector2i(0, 0), "moves": "RRRRRRRRDDLLLDDRRRRRUUUURRRRRDDDDDDDLLLDDRRRDDDLLLLLLUULLLUULLLDDDLLLUUUUUUUUUUU", "stars_needed": 22, "cup": 2, "obstacles": true, "bumps": true}, 
 	{"id": "desert_speedway", "name": "Desert Speedway", "start": Vector2i(0, 0), "moves": "RRRRRRRRRRDDDDRRRRRRDDDDDDLLLLLLLLLLUUULLLLLLUUUUUUU", "stars_needed": 24, "cup": 3, "obstacles": true, "bumps": true},
 	{"id": "neon_velocity", "name": "Neon Velocity", "start": Vector2i(0, 0), "moves": "RRRRRRRRRRRRDDDDDLLLLDDDDDLLLLLLLLUUUUUUUUUU", "stars_needed": 27, "cup": 3, "obstacles": true, "bumps": true},
+	{"id": "apex_summit", "name": "Apex Summit GP", "start": Vector2i(0, 0), "moves": "RRRRRRRRRRRRDDDDLLLLDDDDRRRRRRDDDDLLLLLLLLLLLLLLUUUURRUUUULLUUUU", "stars_needed": 30, "cup": 3, "obstacles": true, "bumps": true},
 ]
 
 
 const WEATHER: = {"pine_loop": "clear", "tent_town": "sunset", "zigzag": "clear", "lakeside": "rain", "canyon": "fog", 
 	"esses": "sunset", "hairpin": "night", "chicane": "rain", "twin": "fog", "grand": "night",
-	"desert_speedway": "sunset", "neon_velocity": "night"}
+	"desert_speedway": "sunset", "neon_velocity": "night", "apex_summit": "fog"}
 const WEATHERS: = ["clear", "sunset", "rain", "fog", "night"]
 
 
 
 const PAR: = {"pine_loop": 148, "tent_town": 134, "zigzag": 130, "lakeside": 128, "canyon": 154, 
 	"esses": 115, "hairpin": 136, "chicane": 140, "twin": 160, "grand": 184,
-	"desert_speedway": 140, "neon_velocity": 126}
+	"desert_speedway": 140, "neon_velocity": 126, "apex_summit": 160}
 const DIFFICULTY: = [
 	{"name": "EASY", "skill": [0.86, 0.92], "band": [0.82, 1.06], "reward": 0.8}, 
 	{"name": "NORMAL", "skill": [0.93, 0.99], "band": [0.88, 1.16], "reward": 1.0}, 
