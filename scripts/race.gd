@@ -37,7 +37,7 @@ var my_env: Environment
 var quality: = 1
 var pickups: Pickups
 var skids: SkidMarks
-var rain_fx: GPUParticles3D
+var rain_fx: CPUParticles3D
 var missions: Array = []
 signal mission_completed(index: int)
 var rs: = {"coins": 0, "drift": 0, "nitro_uses": 0, "pads": 0, "wall_hits": 0, "respawns": 0, "max_kmh": 0.0}
@@ -127,7 +127,7 @@ func _debug_topdown() -> void :
 	c.position = mid + Vector3(0, 50, 0);c.rotation_degrees.x = -90;c.far = 200;add_child(c);c.current = true
 	await get_tree().create_timer(float(OS.get_environment("TTR_TD_WAIT")) if OS.get_environment("TTR_TD_WAIT") != "" else 1.0).timeout
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("/tmp/topdown_%d.png" % track_index)
+	get_viewport().get_texture().get_image().save_png("user://topdown_%d.png" % track_index)
 	get_tree().quit()
 
 func _build_world() -> void :
@@ -1075,66 +1075,8 @@ var _prewarm_left: = -1
 var _pw_root: Node3D
 var _pw_masks: = {}
 func _prewarm() -> void :
-	var cam: = get_viewport().get_camera_3d()
-	if cam == null or not is_inside_tree(): _prewarm_left = 0;return
-	var at: = cam.global_position - cam.global_basis.z * 4.0
-	FX.sparks(self, at, Vector3.UP, max(1, quality))
-
-	for r in racers: r["v"].smoke_t = 0.2
-	var meshes: = {}
-	var parts: Array = []
-	var stack: Array = [self]
-	while stack.size():
-		var n: Node = stack.pop_back()
-		for ch in n.get_children(): stack.append(ch)
-		if n is GPUParticles3D:
-			if n != rain_fx: parts.append(n)
-			for i in n.draw_passes:
-				var dm: Mesh = n.get_draw_pass_mesh(i)
-				if dm: meshes["p%d_%d" % [dm.get_instance_id(), (n.material_override.get_instance_id() if n.material_override else 0)]] = [dm, n.material_override]
-		elif n is MeshInstance3D and n.mesh:
-			var ov: Material = n.material_override
-			if ov == null and n.get_surface_override_material_count() > 0: ov = n.get_surface_override_material(0)
-			meshes["m%d_%d" % [n.mesh.get_instance_id(), ov.get_instance_id() if ov else 0]] = [n.mesh, ov]
-		elif n is MultiMeshInstance3D and n.multimesh and n.multimesh.mesh:
-			var ov2: Material = n.material_override
-			meshes["m%d_%d" % [n.multimesh.mesh.get_instance_id(), ov2.get_instance_id() if ov2 else 0]] = [n.multimesh.mesh, ov2]
-		elif n is GridMap and n.mesh_library:
-			for id in n.mesh_library.get_item_list():
-				var gm: Mesh = n.mesh_library.get_item_mesh(id)
-				if gm: meshes["g%d" % gm.get_instance_id()] = [gm, null]
-	_pw_root = Node3D.new();_pw_root.name = "ShaderWarmup"
-	cam.add_child(_pw_root);_pw_root.position = Vector3(0, 0, -3.0)
-
-	var has_omni: = false; var has_spot: = false
-	for n in find_children("*", "Light3D", true, false):
-		if n is OmniLight3D: has_omni = true
-		if n is SpotLight3D: has_spot = true
-		if not (n is DirectionalLight3D): _pw_masks[n] = n.light_cull_mask;n.light_cull_mask &= ~ ((1 << 9) | (1 << 10) | (1 << 11))
-
-	var sets: = [0]
-	if has_omni: sets.append(1)
-	if has_spot: sets.append(2)
-	if has_omni and has_spot: sets.append(3)
-	var omni: = OmniLight3D.new();omni.omni_range = 3.0;omni.light_energy = 0.01;omni.light_cull_mask = 1 << 10;_pw_root.add_child(omni)
-	var spot: = SpotLight3D.new();spot.spot_range = 6.0;spot.spot_angle = 60.0;spot.light_energy = 0.01;spot.light_cull_mask = 1 << 11
-	_pw_root.add_child(spot);spot.position = Vector3(0, 0, 1.5)
-	var k: = 0
-	for key in meshes.keys():
-		var mesh: Mesh = meshes[key][0]; var ov: Material = meshes[key][1]
-		for li in sets:
-			var pos: = Vector3(((k % 10) - 4.5) * 0.004, ((k / 10) % 10 - 4.5) * 0.004, -0.05 * li)
-			var mi: = MeshInstance3D.new();mi.mesh = mesh;mi.material_override = ov;mi.layers = _PW_LAYERS[li]
-			mi.scale = Vector3.ONE * 0.002;mi.position = pos;_pw_root.add_child(mi)
-			var mm: = MultiMesh.new();mm.transform_format = MultiMesh.TRANSFORM_3D;mm.mesh = mesh;mm.instance_count = 1
-			mm.set_instance_transform(0, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * 0.002), pos + Vector3(0, 0.03, 0)))
-			var mmi: = MultiMeshInstance3D.new();mmi.multimesh = mm;mmi.material_override = ov;mmi.layers = _PW_LAYERS[li];_pw_root.add_child(mmi)
-		k += 1
-	for pnode in parts:
-		var d: GPUParticles3D = pnode.duplicate()
-		d.one_shot = true;d.amount = 1;d.emitting = true;d.position = Vector3(0, 0, 0);d.scale = Vector3.ONE * 0.01
-		_pw_root.add_child(d)
-	_prewarm_left = 4
+	_prewarm_left = 0
+	return
 
 func _prewarm_done() -> void :
 	for n in _pw_masks.keys(): if is_instance_valid(n): n.light_cull_mask = _pw_masks[n]

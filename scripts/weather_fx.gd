@@ -32,20 +32,19 @@ static func wet_library(ml: MeshLibrary) -> MeshLibrary:
 		wet.set_item_mesh(id, nm)
 	return wet
 
-static func rain(parent: Node3D, quality: int) -> GPUParticles3D:
-	var p: = GPUParticles3D.new()
+static func rain(parent: Node3D, quality: int) -> CPUParticles3D:
+	var p: = CPUParticles3D.new()
 	p.amount = [250, 700, 1400][clamp(quality, 0, 2)]
-	p.lifetime = 0.9;p.visibility_aabb = AABB(Vector3(-30, -20, -30), Vector3(60, 40, 60))
-	var pm: = ParticleProcessMaterial.new()
-	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX;pm.emission_box_extents = Vector3(22, 1, 22)
-	pm.direction = Vector3(0.15, -1, 0);pm.spread = 3.0;pm.initial_velocity_min = 24.0;pm.initial_velocity_max = 30.0
-	pm.gravity = Vector3(0, -10, 0)
-	p.process_material = pm
+	p.lifetime = 0.9
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(22, 1, 22)
+	p.direction = Vector3(0.15, -1, 0);p.spread = 3.0;p.initial_velocity_min = 24.0;p.initial_velocity_max = 30.0
+	p.gravity = Vector3(0, -10, 0)
 	var q: = QuadMesh.new();q.size = Vector2(0.03, 0.7)
 	var mat: = StandardMaterial3D.new();mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.albedo_color = Color(0.75, 0.82, 0.95, 0.45);mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
-	q.material = mat;p.draw_pass_1 = q
+	q.material = mat;p.mesh = q
 	p.position = Vector3(0, 14, 0)
 	parent.add_child(p)
 	return p

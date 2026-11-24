@@ -73,7 +73,7 @@ func _ready() -> void :
 	autotest = "--autotest" in OS.get_cmdline_user_args() or OS.get_environment("TTR_AUTOTEST") == "1"
 	if OS.has_feature("web") and str(JavaScriptBridge.eval("location.search", true)).contains("autotest"): autotest = true
 	test_native = autotest and OS.get_environment("TTR_NATIVE") == "1"
-	perf_mode = OS.has_feature("perf") or OS.has_feature("gd") or OS.get_environment("TTR_PERF") == "1" or (OS.has_feature("web") and str(JavaScriptBridge.eval("location.search", true)).contains("perf"))
+	perf_mode = OS.has_feature("perf") or OS.has_feature("mobile") or OS.has_feature("gd") or OS.get_environment("TTR_PERF") == "1" or (OS.has_feature("web") and str(JavaScriptBridge.eval("location.search", true)).contains("perf"))
 	_setup_input()
 	load_game()
 	apply_settings()
