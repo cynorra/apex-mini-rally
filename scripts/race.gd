@@ -1024,7 +1024,7 @@ func _process(delta: float) -> void :
 		if fps_acc >= 6.0:
 			fps_checked = true
 			var fps: = fps_frames / fps_acc
-			if fps < 24.0 and bool(Game.data["settings"].get("auto_quality", true)) and int(Game.data["settings"]["quality"]) > 0 and not Game.autotest:
+			if fps < 24.0 and not Game.native_mobile() and bool(Game.data["settings"].get("auto_quality", true)) and int(Game.data["settings"]["quality"]) > 0 and not Game.autotest:
 				Game.data["settings"]["quality"] = int(Game.data["settings"]["quality"]) - 1
 				Game.apply_settings();Game.save_game()
 				quality = int(Game.data["settings"]["quality"])
@@ -1037,7 +1037,7 @@ func _process(delta: float) -> void :
 
 var _perf_win: = 0.0; var _perf_n: = 0; var _perf_steps: = 0
 func _auto_perf(delta: float) -> void :
-	if Game.quality_choice() != 0 or Game.autotest and not OS.has_feature("web") and OS.get_environment("TTR_AUTOPERF") != "1": return
+	if Game.native_mobile() or Game.quality_choice() != 0 or (Game.autotest and not OS.has_feature("web") and OS.get_environment("TTR_AUTOPERF") != "1"): return
 
 
 	if delta > 0.25: _perf_win = 0.0;_perf_n = 0;return

@@ -407,9 +407,10 @@ func _apply_perf(s: Dictionary) -> void :
 	Engine.max_physics_steps_per_frame = 3 if is_mobile() else 8
 
 
-	var high_q: = RenderingServer.SHADOW_QUALITY_SOFT_LOW if native_mobile() else RenderingServer.SHADOW_QUALITY_SOFT_HIGH
-	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_HARD if lvl == 0 else (RenderingServer.SHADOW_QUALITY_SOFT_LOW if lvl == 1 else high_q))
-	RenderingServer.directional_shadow_atlas_set_size(1024 if lvl == 0 else (2048 if lvl == 1 or native_mobile() else 4096), true)
+	if not native_mobile():
+		var high_q: = RenderingServer.SHADOW_QUALITY_SOFT_HIGH
+		RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_HARD if lvl == 0 else (RenderingServer.SHADOW_QUALITY_SOFT_LOW if lvl == 1 else high_q))
+		RenderingServer.directional_shadow_atlas_set_size(1024 if lvl == 0 else 2048, true)
 	for sun in get_tree().root.find_children("*", "DirectionalLight3D", true, false):
 
 		(sun as DirectionalLight3D).shadow_enabled = lvl >= 1 and not sun.has_meta("no_shadow")
