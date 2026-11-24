@@ -1,0 +1,261 @@
+<en-US>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-US>
+<af>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</af>
+<am>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</am>
+<ar>
+تحسينات في الأداء والتصيير لسباقات أكثر سلاسة على الهواتف. تم إصلاح قياس العرض وتأثيرات الجسيمات، وتحسين مضمار Apex Summit GP والاستقرار العام.
+</ar>
+<az-AZ>
+Mobil yarışlar için performans ve görüntüleme optimizasyonları. Görünüm ölçekleme ve parçacık efektleri düzeltildi, Apex Summit GP pisti ve genel oynanış kararlılığı artırıldı.
+</az-AZ>
+<be>
+Оптимизация производительности и рендеринга для более плавных гонок на мобильных. Исправлены масштаб и частицы, улучшена трасса Apex Summit GP и общая стабильность.
+</be>
+<bg>
+Оптимизации на производителността и визуализацията за по-плавни мобилни състезания. Поправено мащабиране и частици, подобрена писта Apex Summit GP и стабилност.
+</bg>
+<bn-BD>
+মোবাইলে মসৃণ রেসিংয়ের জন্য পারফরম্যান্স এবং রেন্ডারিং অপ্টিমাইজেশন। ভিউপোর্ট স্কেলিং এবং কণা প্রভাব ঠিক করা হয়েছে, অ্যাপেক্স সামিট জিপি ট্র্যাক উন্নত করা হয়েছে।
+</bn-BD>
+<ca>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</ca>
+<cs-CZ>
+Optimalizace výkonu a vykreslování pro plynulejší mobilní závody. Opraveno škálování zobrazení a částicové efekty, vylepšena trať Apex Summit GP a stabilita.
+</cs-CZ>
+<da-DK>
+Ydeevne- og gengivelsesoptimeringer for mere jævne mobilracerløb. Rettet visningsskalering og partikeleffekter, forbedret Apex Summit GP-bane og stabilitet.
+</da-DK>
+<de-DE>
+Leistungs- und Rendering-Optimierungen für flüssigere mobile Rennen. Skalierung des Viewports und Partikeleffekte korrigiert, Apex Summit GP-Strecke verbessert.
+</de-DE>
+<el-GR>
+Βελτιστοποιήσεις απόδοσης και απόδοσης γραφικών για πιο ομαλούς αγώνες σε κινητά. Διορθώθηκε η κλιμάκωση και τα εφέ σωματιδίων, βελτιώθηκε η πίστα Apex Summit GP.
+</el-GR>
+<en-AU>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-AU>
+<en-CA>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-CA>
+<en-GB>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-GB>
+<en-IN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-IN>
+<en-SG>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-SG>
+<en-ZA>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</en-ZA>
+<es-419>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</es-419>
+<es-ES>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</es-ES>
+<es-US>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</es-US>
+<et>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</et>
+<eu-ES>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</eu-ES>
+<fa>
+بهینه‌سازی عملکرد و رندرینگ برای مسابقات روان‌تر در موبایل. رفع مشکل مقیاس دید و افکت‌های ذرات، بهبود پیست Apex Summit GP و پایداری بازی.
+</fa>
+<fa-AE>
+بهینه‌سازی عملکرد و رندرینگ برای مسابقات روان‌تر در موبایل. رفع مشکل مقیاس دید و افکت‌های ذرات، بهبود پیست Apex Summit GP و پایداری بازی.
+</fa-AE>
+<fa-AF>
+بهینه‌سازی عملکرد و رندرینگ برای مسابقات روان‌تر در موبایل. رفع مشکل مقیاس دید و افکت‌های ذرات، بهبود پیست Apex Summit GP و پایداری بازی.
+</fa-AF>
+<fa-IR>
+بهینه‌سازی عملکرد و رندرینگ برای مسابقات روان‌تر در موبایل. رفع مشکل مقیاس دید و افکت‌های ذرات، بهبود پیست Apex Summit GP و پایداری بازی.
+</fa-IR>
+<fi-FI>
+Suorituskyky- ja renderöintiparannuksia sulavampaan mobiilikilpa-ajoon. Korjattu näkymän skaalaus ja hiukkastehosteet, parannettu Apex Summit GP -rataa ja vakautta.
+</fi-FI>
+<fil>
+Mga pag-optimize sa performance at rendering para sa mas maayos na karera sa mobile. Inayos ang viewport scaling at particle effects, pinahusay ang Apex Summit GP track.
+</fil>
+<fr-CA>
+Optimisations des performances et du rendu pour des courses mobiles plus fluides. Correction de l'échelle et des particules, amélioration du circuit Apex Summit GP.
+</fr-CA>
+<fr-FR>
+Optimisations des performances et du rendu pour des courses mobiles plus fluides. Correction de l'échelle et des particules, amélioration du circuit Apex Summit GP.
+</fr-FR>
+<gl-ES>
+Optimizaciones de rendimiento y renderizado para carreras más fluidas en móviles. Corrección de escala y partículas, mejoras en la pista Apex Summit GP y mayor estabilidad.
+</gl-ES>
+<gu>
+मोबाइल पर सहज रेसिंग के लिए प्रदर्शन और रेंडरिंग अनुकूलन। व्यूपोर्ट स्केलिंग और पार्टिकल प्रभाव ठीक किए गए, एपेक्स समिट जीपी ट्रैक में सुधार।
+</gu>
+<hi-IN>
+मोबाइल पर सहज रेसिंग के लिए प्रदर्शन और रेंडरिंग अनुकूलन। व्यूपोर्ट स्केलिंग और पार्टिकल प्रभाव ठीक किए गए, एपेक्स समिट जीपी ट्रैक में सुधार।
+</hi-IN>
+<hr>
+Optimizacije performansi i renderiranja za glađe mobilno utrkivanje. Ispravljeno skaliranje i efekti čestica, poboljšana staza Apex Summit GP i stabilnost.
+</hr>
+<hu-HU>
+Teljesítmény- és renderelési optimalizációk a simább mobilos versenyzésért. Javított nézetméretezés és részecske-effektek, fejlesztett Apex Summit GP pálya.
+</hu-HU>
+<hy-AM>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</hy-AM>
+<id>
+Optimalisasi performa dan render untuk balapan mobile yang lebih lancar. Memperbaiki penskalaan tampilan dan efek partikel, trek Apex Summit GP yang disempurnakan.
+</id>
+<is-IS>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</is-IS>
+<it-IT>
+Ottimizzazioni delle prestazioni e del rendering per gare su dispositivi mobili più fluide. Corretti ridimensionamento e particelle, migliorato il circuito Apex Summit GP.
+</it-IT>
+<iw-IL>
+אופטימיזציות ביצועים ורינדור למרוצים חלקים יותר בנייד. תוקנו קנה המידה של התצוגה ואפקטי החלקיקים, שופר מסלול Apex Summit GP והיציבות הכללית.
+</iw-IL>
+<ja-JP>
+モバイルでのレースをよりスムーズにするパフォーマンスと描画の最適化。ビューポートのスケーリングとパーティクル効果を修正、Apex Summit GPコースを強化。
+</ja-JP>
+<ka-GE>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</ka-GE>
+<kk>
+Оптимизация производительности и рендеринга для более плавных гонок на мобильных. Исправлены масштаб и частицы, улучшена трасса Apex Summit GP и общая стабильность.
+</kk>
+<km-KH>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</km-KH>
+<kn-IN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</kn-IN>
+<ko-KR>
+더 부드러운 모바일 레이싱을 위한 성능 및 렌더링 최적화. 뷰포트 스케일링 및 파티클 효과 수정, Apex Summit GP 트랙 개선 및 전반적인 게임 안정성 향상.
+</ko-KR>
+<ky-KG>
+Оптимизация производительности и рендеринга для более плавных гонок на мобильных. Исправлены масштаб и частицы, улучшена трасса Apex Summit GP и общая стабильность.
+</ky-KG>
+<lo-LA>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</lo-LA>
+<lt>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</lt>
+<lv>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</lv>
+<mk-MK>
+Оптимизации на производителността и визуализацията за по-плавни мобилни състезания. Поправено мащабиране и частици, подобрена писта Apex Summit GP и стабилност.
+</mk-MK>
+<ml-IN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</ml-IN>
+<mn-MN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</mn-MN>
+<mr-IN>
+मोबाइल पर सहज रेसिंग के लिए प्रदर्शन और रेंडरिंग अनुकूलन। व्यूपोर्ट स्केलिंग और पार्टिकल प्रभाव ठीक किए गए, एपेक्स समिट जीपी ट्रैक में सुधार।
+</mr-IN>
+<ms>
+Pengoptimuman prestasi dan pemaparan untuk perlumbaan mudah alih yang lebih lancar. Penskalaan paparan dan kesan zarah dibaiki, trek Apex Summit GP dipertingkatkan.
+</ms>
+<ms-MY>
+Pengoptimuman prestasi dan pemaparan untuk perlumbaan mudah alih yang lebih lancar. Penskalaan paparan dan kesan zarah dibaiki, trek Apex Summit GP dipertingkatkan.
+</ms-MY>
+<my-MM>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</my-MM>
+<ne-NP>
+मोबाइल पर सहज रेसिंग के लिए प्रदर्शन और रेंडरिंग अनुकूलन। व्यूपोर्ट स्केलिंग और पार्टिकल प्रभाव ठीक किए गए, एपेक्स समिट जीपी ट्रैक में सुधार।
+</ne-NP>
+<nl-NL>
+Prestatie- en weergave-optimalisaties voor vloeiendere mobiele races. Schaling en deeltjeseffecten gecorrigeerd, verbeterde Apex Summit GP-baan en betere stabiliteit.
+</nl-NL>
+<no-NO>
+Ytelses- og gjengivelsesoptimaliseringer for jevnere mobilracing. Rettet visningsskalering og partikkeleffekter, forbedret Apex Summit GP-bane og stabilitet.
+</no-NO>
+<pa>
+मोबाइल पर सहज रेसिंग के लिए प्रदर्शन और रेंडरिंग अनुकूलन। व्यूपोर्ट स्केलिंग और पार्टिकल प्रभाव ठीक किए गए, एपेक्स समिट जीपी ट्रैक में सुधार।
+</pa>
+<pl-PL>
+Optymalizacje wydajności i renderowania dla płynniejszych wyścigów mobilnych. Poprawiono skalowanie i efekty cząsteczkowe, ulepszono tor Apex Summit GP i stabilność.
+</pl-PL>
+<pt-BR>
+Otimizações de desempenho e renderização para corridas mais suaves no celular. Correções de escala e partículas, melhorias na pista Apex Summit GP e maior estabilidade.
+</pt-BR>
+<pt-PT>
+Otimizações de desempenho e renderização para corridas mais suaves no telemóvel. Correções de escala e partículas, melhorias na pista Apex Summit GP e maior estabilidade.
+</pt-PT>
+<rm>
+Leistungs- und Rendering-Optimierungen für flüssigere mobile Rennen. Skalierung des Viewports und Partikeleffekte korrigiert, Apex Summit GP-Strecke verbessert.
+</rm>
+<ro>
+Optimizări de performanță și randare pentru curse mai fluide pe mobil. S-au remediat scalarea și particulele, s-a îmbunătățit pista Apex Summit GP și stabilitatea.
+</ro>
+<ru-RU>
+Оптимизация производительности и рендеринга для более плавных гонок на мобильных. Исправлены масштаб и частицы, улучшена трасса Apex Summit GP и общая стабильность.
+</ru-RU>
+<si-LK>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</si-LK>
+<sk>
+Optimalizace výkonu a vykreslování pro plynulejší mobilní závody. Opraveno škálování zobrazení a částicové efekty, vylepšena trať Apex Summit GP a stabilita.
+</sk>
+<sl>
+Optimizacije performansi i renderiranja za glađe mobilno utrkivanje. Ispravljeno skaliranje i efekti čestica, poboljšana staza Apex Summit GP i stabilnost.
+</sl>
+<sq>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</sq>
+<sr>
+Optimizacije performansi i renderiranja za glađe mobilno utrkivanje. Ispravljeno skaliranje i efekti čestica, poboljšana staza Apex Summit GP i stabilnost.
+</sr>
+<sv-SE>
+Prestanda- och renderingsoptimeringar för mjukare mobilracing. Åtgärdat vy-skalning och partikeleffekter, förbättrad Apex Summit GP-bana och stabilitet.
+</sv-SE>
+<sw>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</sw>
+<ta-IN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</ta-IN>
+<te-IN>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</te-IN>
+<th>
+การปรับแต่งประสิทธิภาพและการเรนเดอร์เพื่อการแข่งรถบนมือถือที่ราบรื่นยิ่งขึ้น แก้ไขการปรับขนาดมุมมองและเอฟเฟกต์อนุภาค ปรับปรุงสนาม Apex Summit GP
+</th>
+<tr-TR>
+Mobil yarışlar için performans ve görüntüleme optimizasyonları. Görünüm ölçekleme ve parçacık efektleri düzeltildi, Apex Summit GP pisti ve genel oynanış kararlılığı artırıldı.
+</tr-TR>
+<uk>
+Оптимізація продуктивності та рендерингу для плавніших перегонів на мобільних. Виправлено масштабування та частинки, покращено трасу Apex Summit GP та стабільність.
+</uk>
+<ur>
+موبائل پر ہموار ریسنگ کے لیے کارکردگی اور رینڈرنگ کی اصلاحات۔ ویو پورٹ اسکیلنگ اور پارٹیکل ایفیکٹس درست کیے گئے، اپیکس سمٹ جی پی ٹریک میں بہتری۔
+</ur>
+<vi>
+Tối ưu hóa hiệu suất và hiển thị để đua xe mượt mà hơn trên di động. Sửa lỗi tỷ lệ khung nhìn và hiệu ứng hạt, cải thiện đường đua Apex Summit GP và độ ổn định.
+</vi>
+<zh-CN>
+优化性能与渲染，带来更流畅的移动赛车体验。修复了视口缩放与粒子特效，升级了Apex Summit GP赛道，并提升了游戏整体稳定性。
+</zh-CN>
+<zh-HK>
+優化效能與渲染，帶來更流暢的移動賽車體驗。修復了視口縮放與粒子特效，升級了Apex Summit GP賽道，並提升了遊戲整體穩定性。
+</zh-HK>
+<zh-TW>
+優化效能與渲染，帶來更流暢的移動賽車體驗。修復了視口縮放與粒子特效，升級了Apex Summit GP賽道，並提升了遊戲整體穩定性。
+</zh-TW>
+<zu>
+Performance & rendering optimizations for smoother mobile racing. Fixed viewport scaling and particle effects, enhanced Apex Summit GP track, and overall gameplay stability.
+</zu>
