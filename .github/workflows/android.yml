@@ -55,6 +55,7 @@ jobs:
           set -e
           mkdir -p android/build
           unzip -q "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_CHANNEL}/android_source.zip" -d android/build
+          python3 scripts/patch_android_gles3_ubo.py android/build/libs
           echo "${GODOT_VERSION}.${GODOT_CHANNEL}" > android/.build_version
           touch android/build/.gdignore
 
@@ -71,7 +72,7 @@ jobs:
 
       - name: Inject CI version code
         run: |
-          sed -i "s/version\/code=1/version\/code=$GITHUB_RUN_NUMBER/g" export_presets.cfg
+          sed -i "s/version\/code=[0-9]*/version\/code=$GITHUB_RUN_NUMBER/g" export_presets.cfg
 
       - name: Export release AAB and APK
         env:
