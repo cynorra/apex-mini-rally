@@ -1052,8 +1052,8 @@ func _auto_perf(delta: float) -> void :
 	_perf_steps += 1
 	if quality > 0:
 		s["auto_level"] = quality - 1
-	elif float(s.get("auto_scale", 1.0)) > 0.62:
-		s["auto_scale"] = max(0.6, float(s.get("auto_scale", 1.0)) * 0.85)
+	elif float(s.get("auto_scale", 1.0)) > 1.0:
+		s["auto_scale"] = 1.0
 	else:
 		return
 	Game.apply_settings();Game.save_game()

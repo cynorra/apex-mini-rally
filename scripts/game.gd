@@ -290,8 +290,8 @@ func apply_settings() -> void :
 	var s: Dictionary = data["settings"]
 	if perf_mode: _apply_perf(s);return
 	var q: = int(s["quality"])
-	get_viewport().msaa_3d = Viewport.MSAA_2X if q >= 2 else Viewport.MSAA_DISABLED
-	get_viewport().scaling_3d_scale = 0.6 if q == 0 else 1.0
+	get_viewport().msaa_3d = Viewport.MSAA_DISABLED
+	get_viewport().scaling_3d_scale = 1.0
 
 
 func apply_audio() -> void :
@@ -381,17 +381,7 @@ func native_screen_cap(screen: = Vector2i.ZERO) -> int:
 const TARGET_3D_H: = [540.0, 720.0, 100000.0]
 const TARGET_3D_H_NATIVE: = [600.0, 900.0, 100000.0]
 func render_scale_for(level: int) -> float:
-	var h: = float(get_viewport().get_visible_rect().size.y)
-	var win_h: = float(DisplayServer.window_get_size().y) if not OS.has_feature("headless") else h
-	if win_h <= 0.0: win_h = h
-	var sc: = 1.0
-	if native_mobile():
-		sc = clampf(TARGET_3D_H_NATIVE[level] / win_h, 0.5, [0.8, 0.9, 1.0][level])
-	elif is_mobile():
-		sc = clampf(TARGET_3D_H[level] / win_h, 0.4, [0.75, 0.85, 1.0][level])
-	else:
-		sc = [0.7, 1.0, 1.0][level]
-	return sc
+	return 1.0
 
 func _apply_perf(s: Dictionary) -> void :
 	var lvl: = _effective_level(s)
@@ -406,8 +396,8 @@ func _apply_perf(s: Dictionary) -> void :
 
 	if msaa == Viewport.MSAA_DISABLED or vp.msaa_3d > msaa: vp.msaa_3d = msaa
 	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
-	vp.scaling_3d_scale = sc
-	vp.msaa_3d = msaa
+	vp.scaling_3d_scale = 1.0
+	vp.msaa_3d = Viewport.MSAA_DISABLED
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	vp.use_debanding = false
 
