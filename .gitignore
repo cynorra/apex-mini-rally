@@ -1,0 +1,7 @@
+.godot/
+*.gdc
+assets.sparsepck
+_cl_
+gdre_export.log
+android/
+build/
