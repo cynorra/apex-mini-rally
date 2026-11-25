@@ -26,6 +26,7 @@ extends Node
 signal ad_started
 signal ad_finished
 
+const ADMOB_BANNER_ID: = "ca-app-pub-4674211063760769/7307296211"
 const ADMOB_INTERSTITIAL_ID: = "ca-app-pub-4674211063760769/7938790950"
 const ADMOB_REWARDED_ID: = "ca-app-pub-4674211063760769/1684373795"
 const MIN_SECONDS_BETWEEN_INTERSTITIALS: = 90.0
@@ -197,10 +198,12 @@ func _race():
 
 func _show(kind: String, done: Callable) -> void :
 	_busy = true
+	_admob_sync_banner()
 	ad_started.emit()
 	_mute(true)
 	var finish: = func(ok: bool):
 		_busy = false
+		_admob_sync_banner()
 		_mute(false)
 		ad_finished.emit()
 		done.call(ok)
@@ -372,11 +375,21 @@ const ADMOB_SHOW_TIMEOUT: = 120.0
 
 var _admob_ready: = false
 var _admob_initializing: = false
+var _banner_view: AdView = null
+var _banner_loaded: = false
+var _banner_loading: = false
+var _banner_want_visible: = false
+var _banner_shown: = false
 var _iv_ad: InterstitialAd = null
 var _rv_ad: RewardedAd = null
 var _iv_loading: = false
 var _rv_loading: = false
 var _admob_token: = 0
+
+
+func set_banner_visible(vis: bool) -> void :
+	_banner_want_visible = vis and ads_enabled() and not Game.autotest
+	_admob_sync_banner()
 
 
 func _admob_init() -> void :
@@ -411,8 +424,58 @@ func _admob_start() -> void :
 	if _admob_ready: return
 	_admob_ready = true
 	MobileAds.initialize()
+	_admob_load_banner()
 	_admob_load_interstitial()
 	_admob_load_rewarded()
+
+
+func _admob_load_banner() -> void :
+	if provider != "admob" or not _admob_ready or not ads_enabled() or Game.autotest: return
+	if _banner_view != null or _banner_loading: return
+	_banner_loading = true
+	_banner_loaded = false
+	_banner_view = AdView.new(ADMOB_BANNER_ID, AdSize.BANNER, AdPosition.TOP)
+	var listener: = AdListener.new()
+	listener.on_ad_loaded = func():
+		_banner_loading = false
+		_banner_loaded = true
+		_admob_sync_banner()
+	listener.on_ad_failed_to_load = func(err: LoadAdError):
+		_banner_loading = false
+		_banner_loaded = false
+		print("[Ads] banner load failed: ", err.message)
+		if _banner_view != null:
+			_banner_view.destroy()
+			_banner_view = null
+		get_tree().create_timer(45.0, true, false, true).timeout.connect(_admob_load_banner)
+	_banner_view.ad_listener = listener
+	_banner_view.hide()
+	_banner_shown = false
+	_banner_view.load_ad(AdRequest.new())
+
+
+func _admob_sync_banner() -> void :
+	if provider != "admob": return
+	if not ads_enabled():
+		if _banner_view != null:
+			_banner_view.hide()
+			_banner_view.destroy()
+			_banner_view = null
+			_banner_loaded = false
+			_banner_loading = false
+			_banner_shown = false
+		return
+	if _banner_want_visible and _admob_ready and _banner_view == null and not _banner_loading:
+		_admob_load_banner()
+		return
+	if _banner_view == null or not _banner_loaded: return
+	var should_show: = _banner_want_visible and not _busy
+	if should_show and not _banner_shown:
+		_banner_view.show()
+		_banner_shown = true
+	elif not should_show and _banner_shown:
+		_banner_view.hide()
+		_banner_shown = false
 
 
 func _admob_load_interstitial() -> void :

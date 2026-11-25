@@ -76,6 +76,8 @@ func _set_screen(c: Control) -> void :
 	c.set_anchors_preset(Control.PRESET_FULL_RECT)
 	c.theme = UI.make_theme()
 	ui_layer.add_child(c)
+	var in_race: = race != null and is_instance_valid(race)
+	Ads.set_banner_visible(not in_race and c.name != "Results")
 
 func _coins_badge() -> Control:
 	var p: = UI.panel()
@@ -252,7 +254,7 @@ func show_garage() -> void :
 		picker.add_child(b)
 	var outer: = UI.vbox(16);outer.alignment = BoxContainer.ALIGNMENT_CENTER;outer.add_child(main);outer.add_child(picker)
 	var back: = UI.button("BACK", func(): garage_sel = ""; var cb: = garage_back;garage_back = Callable();(cb if cb.is_valid() else show_title).call(), 22, 200, "grey");back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER;outer.add_child(back)
-	var cc: = UI.center(outer);cc.offset_top = 60;root.add_child(cc)
+	var cc: = UI.center(outer);cc.offset_top = 74;root.add_child(cc)
 	_set_screen(root)
 
 var _swatches: Array[Button] = []
@@ -457,6 +459,7 @@ var login_layer: CanvasLayer
 func _maybe_daily_login() -> void :
 	var p: = Progress.login_pending()
 	if p.is_empty() or (login_layer and is_instance_valid(login_layer)): return
+	Ads.set_banner_visible(false)
 	login_layer = CanvasLayer.new();login_layer.layer = 30;add_child(login_layer)
 	var bg: = ColorRect.new();bg.color = Color(0, 0, 0, 0.6);bg.set_anchors_preset(Control.PRESET_FULL_RECT);bg.theme = UI.make_theme();login_layer.add_child(bg)
 	var pn: = UI.panel(); var v: = UI.vbox(14);pn.add_child(v)
@@ -534,6 +537,7 @@ func show_settings() -> void :
 
 
 func _confirm(text: String, yes_cb: Callable) -> void :
+	Ads.set_banner_visible(false)
 	var layer: = CanvasLayer.new();layer.layer = 50;layer.name = "Confirm";add_child(layer)
 	var dim: = ColorRect.new();dim.color = Color(0, 0, 0, 0.6);dim.set_anchors_preset(Control.PRESET_FULL_RECT);dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	layer.add_child(dim)
@@ -542,8 +546,11 @@ func _confirm(text: String, yes_cb: Callable) -> void :
 	var l: = UI.label(text, 24);l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART;l.custom_minimum_size.x = 520
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;l.name = "Text";v.add_child(l)
 	var row: = UI.hbox(24);row.alignment = BoxContainer.ALIGNMENT_CENTER;v.add_child(row)
-	var yes: = UI.red_button(tr("YES"), func(): layer.queue_free();yes_cb.call(), 24, 200);yes.name = "Yes"
-	var no: = UI.button(tr("NO"), func(): layer.queue_free(), 24, 200, "grey");no.name = "No"
+	var restore_banner: = func():
+		var in_race: = race != null and is_instance_valid(race)
+		Ads.set_banner_visible(not in_race and screen != null and is_instance_valid(screen) and screen.name != "Results")
+	var yes: = UI.red_button(tr("YES"), func(): layer.queue_free();restore_banner.call();yes_cb.call(), 24, 200);yes.name = "Yes"
+	var no: = UI.button(tr("NO"), func(): layer.queue_free();restore_banner.call(), 24, 200, "grey");no.name = "No"
 	row.add_child(yes);row.add_child(no)
 	no.call_deferred("grab_focus")
 
@@ -678,6 +685,7 @@ func _option_row(title: String, opts: Array, sel: int, cb: Callable) -> Control:
 
 
 func start_race(track: int, mode: String) -> void :
+	Ads.set_banner_visible(false)
 	last_race = {"track": track, "mode": mode}
 	_detach_previews()
 	Game.flush_save()
@@ -778,7 +786,7 @@ func _on_race_finished(res: Dictionary) -> void :
 	show_results(res, unlocks)
 
 func show_results(res: Dictionary, unlocks: Array) -> void :
-	var root: = Control.new()
+	var root: = Control.new();root.name = "Results"
 	var dim: = ColorRect.new();dim.color = Color(0.03, 0.05, 0.12, 0.55);dim.set_anchors_preset(Control.PRESET_FULL_RECT);root.add_child(dim)
 	var p: = UI.panel(); var v: = UI.vbox(10);p.add_child(v);p.custom_minimum_size.x = 520
 	var places: = ["1ST PLACE!", "2ND PLACE", "3RD PLACE", "4TH PLACE", "5TH PLACE", "6TH PLACE", "7TH PLACE", "8TH PLACE"]
