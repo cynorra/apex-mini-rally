@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Patches Godot 4.x arm64-v8a libgodot_android.so so that every call to
-glBindBufferBase(target, index, buffer) and glBindBufferRange(target, index, buffer, offset, size)
+Patches Godot 4.x arm64-v8a libgodot_android.so (both standalone .so files and inside
+.aar / .apk / .aab / .zip archives such as godot-lib.template_release.aar) so that every
+call to glBindBufferBase(target, index, buffer) and glBindBufferRange(target, index, buffer, offset, size)
 also invokes glBindBuffer(target, buffer).
 
 Root cause fixed:
@@ -17,8 +18,11 @@ freezing or corrupting all 3D SceneData / InstanceData / Light UBOs after Frame 
 """
 import array
 import os
+import shutil
 import struct
 import sys
+import tempfile
+import zipfile
 
 
 def encode_bl(pc: int, target: int) -> int:
@@ -31,13 +35,12 @@ def encode_b(pc: int, target: int) -> int:
     return 0x14000000 | (diff & 0x03FFFFFF)
 
 
-def patch_so(so_path: str) -> None:
-    with open(so_path, "rb") as f:
-        data = bytearray(f.read())
+def patch_so_bytes(raw: bytes, label: str = "libgodot_android.so") -> tuple[bytes, int, int]:
+    data = bytearray(raw)
 
     if data[:4] != b"\x7fELF" or data[4] != 2 or struct.unpack_from("<H", data, 0x12)[0] != 183:
-        print(f"[skip] {so_path} is not an ARM64 ELF64 binary")
-        return
+        print(f"[skip] {label} is not an ARM64 ELF64 binary")
+        return raw, 0, 0
 
     e_shoff = struct.unpack_from("<Q", data, 0x28)[0]
     e_shentsize, e_shnum, e_shstrndx = struct.unpack_from("<HHH", data, 0x3A)
@@ -78,7 +81,7 @@ def patch_so(so_path: str) -> None:
             cave_vaddr = st_value
 
     if cave_vaddr is None:
-        raise RuntimeError(f"Could not find suitable code cave in {so_path}")
+        raise RuntimeError(f"Could not find suitable code cave in {label}")
 
     plt_targets = {}
     for i in range(0, rela_plt_sec[5], rela_plt_sec[9]):
@@ -152,23 +155,82 @@ def patch_so(so_path: str) -> None:
                 write_u32(pc, encode_bl(pc, cave2_vaddr))
                 patched_range += 1
 
-    with open(so_path, "wb") as f:
-        f.write(data)
-
     print(
-        f"[patched] {so_path}: {patched_base} glBindBufferBase + {patched_range} glBindBufferRange calls"
+        f"[patched] {label}: {patched_base} glBindBufferBase + {patched_range} glBindBufferRange calls"
     )
+    return bytes(data), patched_base, patched_range
+
+
+def patch_so(so_path: str) -> None:
+    with open(so_path, "rb") as f:
+        raw = f.read()
+    patched, _, _ = patch_so_bytes(raw, so_path)
+    with open(so_path, "wb") as f:
+        f.write(patched)
+
+
+def patch_zip_archive(archive_path: str) -> bool:
+    """Patches any arm64-v8a/libgodot_android.so inside a .aar, .apk, .aab, or .zip archive."""
+    if not zipfile.is_zipfile(archive_path):
+        return False
+    with zipfile.ZipFile(archive_path, "r") as zin:
+        targets = [
+            name
+            for name in zin.namelist()
+            if name.endswith("libgodot_android.so") and "arm64-v8a" in name
+        ]
+        if not targets:
+            return False
+
+        fd, tmp_path = tempfile.mkstemp(suffix=".zip")
+        os.close(fd)
+        modified = False
+        try:
+            with zipfile.ZipFile(tmp_path, "w") as zout:
+                for info in zin.infolist():
+                    if info.filename.startswith("META-INF/") and (
+                        info.filename.endswith((".SF", ".RSA", ".DSA", ".EC"))
+                        or info.filename == "META-INF/MANIFEST.MF"
+                    ):
+                        continue
+                    content = zin.read(info.filename)
+                    if info.filename in targets:
+                        new_content, b_cnt, r_cnt = patch_so_bytes(
+                            content, f"{archive_path}!{info.filename}"
+                        )
+                        if b_cnt > 0 or r_cnt > 0:
+                            content = new_content
+                            modified = True
+                    zout.writestr(info, content, compress_type=info.compress_type)
+            if modified:
+                shutil.move(tmp_path, archive_path)
+            return modified
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+
+def process_path(arg: str) -> None:
+    if os.path.isfile(arg):
+        if arg.endswith(".so"):
+            patch_so(arg)
+        elif arg.endswith((".aar", ".apk", ".aab", ".zip")):
+            patch_zip_archive(arg)
+    elif os.path.isdir(arg):
+        for root, _, files in os.walk(arg):
+            for f in files:
+                full = os.path.join(root, f)
+                if f == "libgodot_android.so" and "arm64-v8a" in root:
+                    patch_so(full)
+                elif f.endswith((".aar", ".apk")) and (
+                    "godot-lib" in f or "android_release" in f or "android_debug" in f
+                ):
+                    patch_zip_archive(full)
 
 
 def main() -> None:
     for arg in sys.argv[1:]:
-        if os.path.isfile(arg):
-            patch_so(arg)
-        elif os.path.isdir(arg):
-            for root, _, files in os.walk(arg):
-                for f in files:
-                    if f == "libgodot_android.so" and "arm64-v8a" in root:
-                        patch_so(os.path.join(root, f))
+        process_path(arg)
 
 
 if __name__ == "__main__":

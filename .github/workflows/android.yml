@@ -53,9 +53,10 @@ jobs:
       - name: Android build template
         run: |
           set -e
+          python3 scripts/patch_android_gles3_ubo.py "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_CHANNEL}"
           mkdir -p android/build
           unzip -q "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_CHANNEL}/android_source.zip" -d android/build
-          python3 scripts/patch_android_gles3_ubo.py android/build/libs
+          python3 scripts/patch_android_gles3_ubo.py android/build
           echo "${GODOT_VERSION}.${GODOT_CHANNEL}" > android/.build_version
           touch android/build/.gdignore
 
@@ -85,6 +86,11 @@ jobs:
           mkdir -p build
           godot --headless --export-release "Android" build/apex-mini-rally.aab
           godot --headless --export-release "Android APK" build/apex-mini-rally.apk
+          python3 scripts/patch_android_gles3_ubo.py build/apex-mini-rally.aab build/apex-mini-rally.apk
+          jarsigner -keystore "$GODOT_ANDROID_KEYSTORE_RELEASE_PATH" -storepass "$GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD" -keypass "$GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD" build/apex-mini-rally.aab "$GODOT_ANDROID_KEYSTORE_RELEASE_USER"
+          /usr/local/lib/android/sdk/build-tools/35.0.1/zipalign -f -p 4 build/apex-mini-rally.apk build/apex-mini-rally-aligned.apk
+          mv build/apex-mini-rally-aligned.apk build/apex-mini-rally.apk
+          /usr/local/lib/android/sdk/build-tools/35.0.1/apksigner sign --ks "$GODOT_ANDROID_KEYSTORE_RELEASE_PATH" --ks-key-alias "$GODOT_ANDROID_KEYSTORE_RELEASE_USER" --ks-pass "pass:$GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD" --key-pass "pass:$GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD" build/apex-mini-rally.apk
           jarsigner -verify -verbose -certs build/apex-mini-rally.aab | head -n 30
           /usr/local/lib/android/sdk/build-tools/35.0.1/apksigner verify --print-certs build/apex-mini-rally.apk
 
