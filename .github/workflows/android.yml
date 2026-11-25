@@ -61,7 +61,9 @@ jobs:
           touch android/build/.gdignore
 
       - name: Import project
-        run: godot --headless --import || true
+        run: |
+          rm -f google_play_exact_match_all.csv google_play_exact_match_all.zip
+          godot --headless --import || true
 
       - name: Keystore
         run: |
