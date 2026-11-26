@@ -12,7 +12,20 @@
           "package_name": "com.cynorra.apexminirally"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1003686518705-79bnh89gcqf9emc9iv3oj5plaiaj0e29.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cynorra.apexminirally",
+            "certificate_hash": "0076a4f22b91359532e6faf084d64544e5d5b6a2"
+          }
+        },
+        {
+          "client_id": "1003686518705-85hds4jcr3keu05v1segmm7bjiumqbfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyABGKTT6fjs9DYjirzUB9gEPq_IaH7NlGk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003686518705-85hds4jcr3keu05v1segmm7bjiumqbfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
