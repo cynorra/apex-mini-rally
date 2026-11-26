@@ -107,15 +107,32 @@ def main() -> int:
     shutil.copy2(GOOGLE_SERVICES_SRC, ANDROID_BUILD / "google-services.json")
     print(f"[setup_firebase_android] Copied google-services.json -> {ANDROID_BUILD / 'google-services.json'}")
 
-    # Copy MiniRallyAuthPlugin.java
-    java_dst_dir = ANDROID_BUILD / "src" / "com" / "cynorra" / "apexminirally"
+    # Determine Java source root from build.gradle / directory layout
+    gradle_text = (ANDROID_BUILD / "build.gradle").read_text(encoding="utf-8")
+    if (ANDROID_BUILD / "src" / "main" / "java").exists() or "src/main/java" in gradle_text:
+        java_root = ANDROID_BUILD / "src" / "main" / "java"
+    else:
+        java_root = ANDROID_BUILD / "src"
+    java_dst_dir = java_root / "com" / "cynorra" / "apexminirally"
     java_dst_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(PLUGIN_JAVA_SRC, java_dst_dir / "MiniRallyAuthPlugin.java")
     print(f"[setup_firebase_android] Copied MiniRallyAuthPlugin.java -> {java_dst_dir}")
 
-    # Patch build.gradle and AndroidManifest.xml
+    # Patch build.gradle
     patch_build_gradle(ANDROID_BUILD / "build.gradle")
-    patch_manifest(ANDROID_BUILD / "AndroidManifest.xml")
+
+    # Find and patch AndroidManifest.xml
+    manifest_candidates = [
+        ANDROID_BUILD / "AndroidManifest.xml",
+        ANDROID_BUILD / "src" / "main" / "AndroidManifest.xml",
+    ]
+    manifest_path = next((p for p in manifest_candidates if p.exists()), None)
+    if manifest_path is None:
+        found = sorted(ANDROID_BUILD.rglob("AndroidManifest.xml"))
+        manifest_path = found[0] if found else None
+    if manifest_path is None:
+        raise RuntimeError(f"Could not locate AndroidManifest.xml under {ANDROID_BUILD}")
+    patch_manifest(manifest_path)
     return 0
 
 
