@@ -19,7 +19,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 _custom_features="perf"
-config/name="Apex Mini Rally"
+config/name="Mini Rally: Car Racing & Drift"
 config/tags=PackedStringArray("starterkit")
 run/main_scene="res://scenes/game.tscn"
 config/quit_on_go_back=false
