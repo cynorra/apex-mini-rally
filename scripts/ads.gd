@@ -375,6 +375,8 @@ const ADMOB_SHOW_TIMEOUT: = 120.0
 
 var _admob_ready: = false
 var _admob_initializing: = false
+var _admob_sdk_started: = false
+var _admob_sdk_ready: = false
 var _banner_view: AdView = null
 var _banner_loaded: = false
 var _banner_loading: = false
@@ -398,6 +400,10 @@ func _admob_init() -> void :
 	var params: = ConsentRequestParameters.new()
 	params.tag_for_under_age_of_consent = false
 	UserMessagingPlatform.consent_information.update(params, _on_consent_updated, _on_consent_error)
+	get_tree().create_timer(5.0, true, false, true).timeout.connect( func():
+		if not _admob_sdk_started:
+			print("[Ads] UMP consent timeout fallback -> starting AdMob")
+			_admob_start())
 
 
 func _on_consent_updated() -> void :
@@ -421,35 +427,52 @@ func _on_consent_error(_err: FormError) -> void :
 
 
 func _admob_start() -> void :
-	if _admob_ready: return
+	if _admob_sdk_started: return
+	_admob_sdk_started = true
+	var init_listener: = OnInitializationCompleteListener.new()
+	init_listener.on_initialization_complete = func(_status):
+		_admob_on_sdk_ready()
+	MobileAds.initialize(init_listener)
+	get_tree().create_timer(4.0, true, false, true).timeout.connect( func():
+		if not _admob_sdk_ready:
+			_admob_on_sdk_ready())
+
+
+func _admob_on_sdk_ready() -> void :
+	if _admob_sdk_ready: return
+	_admob_sdk_ready = true
 	_admob_ready = true
-	MobileAds.initialize()
-	_admob_load_banner()
+	_admob_sync_banner()
 	_admob_load_interstitial()
 	_admob_load_rewarded()
 
 
 func _admob_load_banner() -> void :
 	if provider != "admob" or not _admob_ready or not ads_enabled() or Game.autotest: return
+	if not _banner_want_visible or _busy: return
 	if _banner_view != null or _banner_loading: return
 	_banner_loading = true
 	_banner_loaded = false
-	_banner_view = AdView.new(ADMOB_BANNER_ID, AdSize.BANNER, AdPosition.TOP)
+	var ad_size: AdSize = AdSize.get_current_orientation_anchored_adaptive_banner_ad_size(AdSize.FULL_WIDTH)
+	if ad_size == null or ad_size.width <= 0 or ad_size.height <= 0:
+		ad_size = AdSize.BANNER
+	_banner_view = AdView.new(ADMOB_BANNER_ID, ad_size, AdPosition.TOP)
 	var listener: = AdListener.new()
 	listener.on_ad_loaded = func():
 		_banner_loading = false
 		_banner_loaded = true
+		_banner_shown = true
 		_admob_sync_banner()
 	listener.on_ad_failed_to_load = func(err: LoadAdError):
 		_banner_loading = false
 		_banner_loaded = false
+		_banner_shown = false
 		print("[Ads] banner load failed: ", err.message)
 		if _banner_view != null:
 			_banner_view.destroy()
 			_banner_view = null
-		get_tree().create_timer(45.0, true, false, true).timeout.connect(_admob_load_banner)
+		get_tree().create_timer(25.0, true, false, true).timeout.connect(_admob_load_banner)
 	_banner_view.ad_listener = listener
-	_banner_view.hide()
 	_banner_shown = false
 	_banner_view.load_ad(AdRequest.new())
 
@@ -465,11 +488,11 @@ func _admob_sync_banner() -> void :
 			_banner_loading = false
 			_banner_shown = false
 		return
-	if _banner_want_visible and _admob_ready and _banner_view == null and not _banner_loading:
+	var should_show: = _banner_want_visible and not _busy
+	if should_show and _admob_ready and _banner_view == null and not _banner_loading:
 		_admob_load_banner()
 		return
 	if _banner_view == null or not _banner_loaded: return
-	var should_show: = _banner_want_visible and not _busy
 	if should_show and not _banner_shown:
 		_banner_view.show()
 		_banner_shown = true
@@ -488,7 +511,7 @@ func _admob_load_interstitial() -> void :
 	cb.on_ad_failed_to_load = func(err: LoadAdError):
 		_iv_loading = false
 		print("[Ads] interstitial load failed: ", err.message)
-		get_tree().create_timer(45.0, true, false, true).timeout.connect(_admob_load_interstitial)
+		get_tree().create_timer(25.0, true, false, true).timeout.connect(_admob_load_interstitial)
 	InterstitialAdLoader.new().load(ADMOB_INTERSTITIAL_ID, AdRequest.new(), cb)
 
 
@@ -502,7 +525,7 @@ func _admob_load_rewarded() -> void :
 	cb.on_ad_failed_to_load = func(err: LoadAdError):
 		_rv_loading = false
 		print("[Ads] rewarded load failed: ", err.message)
-		get_tree().create_timer(45.0, true, false, true).timeout.connect(_admob_load_rewarded)
+		get_tree().create_timer(25.0, true, false, true).timeout.connect(_admob_load_rewarded)
 	RewardedAdLoader.new().load(ADMOB_REWARDED_ID, AdRequest.new(), cb)
 
 

@@ -12,7 +12,7 @@ const PRODUCTS: = {
 }
 
 func available() -> bool:
-	return OS.has_feature("android") and Engine.has_singleton("GodotGooglePlayBilling")
+	return false
 
 func purchase(id: String) -> void :
 	if available():
