@@ -20,26 +20,42 @@ PLUGIN_JAVA_SRC = ROOT / "firebase" / "java" / "MiniRallyAuthPlugin.java"
 def patch_build_gradle(gradle_path: Path) -> None:
     text = gradle_path.read_text(encoding="utf-8")
 
-    # 1. Add com.google.gms:google-services classpath inside buildscript { dependencies { ... } }
-    if "com.google.gms:google-services" not in text:
-        pattern = r"(buildscript\s*\{[\s\S]*?dependencies\s*\{)"
-        replacement = r"\1\n        classpath 'com.google.gms:google-services:4.4.2'"
-        new_text, count = re.subn(pattern, replacement, text, count=1)
-        if count == 0:
-            raise RuntimeError("Could not find buildscript dependencies block in build.gradle")
-        text = new_text
+    # 1. Apply com.google.gms.google-services plugin (supports both plugins {} DSL and buildscript {})
+    if "com.google.gms" not in text:
+        if re.search(r"^\s*plugins\s*\{", text, re.MULTILINE):
+            text, count = re.subn(
+                r"(^\s*plugins\s*\{)",
+                r"\1\n    id 'com.google.gms.google-services' version '4.4.2'",
+                text,
+                count=1,
+                flags=re.MULTILINE,
+            )
+            if count == 0:
+                raise RuntimeError("Failed to inject google-services into plugins block")
+        elif re.search(r"buildscript\s*\{[\s\S]*?dependencies\s*\{", text):
+            text = re.sub(
+                r"(buildscript\s*\{[\s\S]*?dependencies\s*\{)",
+                r"\1\n        classpath 'com.google.gms:google-services:4.4.2'",
+                text,
+                count=1,
+            )
+            text = text.rstrip() + "\n\napply plugin: 'com.google.gms.google-services'\n"
+        else:
+            header = (
+                "buildscript {\n"
+                "    repositories {\n"
+                "        google()\n"
+                "        mavenCentral()\n"
+                "    }\n"
+                "    dependencies {\n"
+                "        classpath 'com.google.gms:google-services:4.4.2'\n"
+                "    }\n"
+                "}\n\n"
+            )
+            text = header + text.rstrip() + "\n\napply plugin: 'com.google.gms.google-services'\n"
 
     # 2. Add Firebase + Google Sign-In dependencies inside top-level dependencies { ... }
     if "com.google.firebase:firebase-auth" not in text:
-        # Match dependencies block that is NOT inside buildscript (after plugins/apply or android block)
-        marker = "apply plugin: 'com.android.application'"
-        idx = text.find(marker)
-        if idx == -1:
-            idx = text.find("android {")
-        deps_match = re.search(r"dependencies\s*\{", text[idx:])
-        if not deps_match:
-            raise RuntimeError("Could not find app dependencies block in build.gradle")
-        insert_pos = idx + deps_match.end()
         firebase_deps = (
             "\n    implementation platform('com.google.firebase:firebase-bom:33.7.0')\n"
             "    implementation 'com.google.firebase:firebase-analytics'\n"
@@ -47,11 +63,13 @@ def patch_build_gradle(gradle_path: Path) -> None:
             "    implementation 'com.google.firebase:firebase-firestore'\n"
             "    implementation 'com.google.android.gms:play-services-auth:21.3.0'\n"
         )
-        text = text[:insert_pos] + firebase_deps + text[insert_pos:]
-
-    # 3. Apply google-services plugin at the end
-    if "apply plugin: 'com.google.gms.google-services'" not in text:
-        text = text.rstrip() + "\n\napply plugin: 'com.google.gms.google-services'\n"
+        # Find top-level dependencies { (at start of line, not indented inside buildscript)
+        deps_match = re.search(r"^dependencies\s*\{", text, re.MULTILINE)
+        if deps_match:
+            insert_pos = deps_match.end()
+            text = text[:insert_pos] + firebase_deps + text[insert_pos:]
+        else:
+            text = text.rstrip() + "\n\ndependencies {" + firebase_deps + "}\n"
 
     gradle_path.write_text(text, encoding="utf-8")
     print(f"[setup_firebase_android] Patched {gradle_path}")
