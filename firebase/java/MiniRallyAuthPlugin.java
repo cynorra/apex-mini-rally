@@ -134,6 +134,39 @@ public class MiniRallyAuthPlugin extends GodotPlugin {
         });
     }
 
+    @UsedByGodot
+    public void sign_in_email(String email, String password) {
+        if (auth == null) {
+            emitSignal("sign_in_failed", "Auth unavailable");
+            return;
+        }
+        if (email == null || email.trim().isEmpty() || password == null || password.isEmpty()) {
+            emitSignal("sign_in_failed", "Email and password required");
+            return;
+        }
+        auth.signInWithEmailAndPassword(email.trim(), password).addOnCompleteListener(task -> {
+            if (task.isSuccessful() && auth.getCurrentUser() != null) {
+                FirebaseUser user = auth.getCurrentUser();
+                String uid = user.getUid();
+                String name = user.getDisplayName() != null && !user.getDisplayName().isEmpty()
+                        ? user.getDisplayName()
+                        : email.trim().split("@")[0];
+                String userEmail = user.getEmail() != null ? user.getEmail() : email.trim();
+                if (db != null) {
+                    Map<String, Object> profile = new HashMap<>();
+                    profile.put("name", name);
+                    profile.put("email", userEmail);
+                    profile.put("last_login", FieldValue.serverTimestamp());
+                    db.collection("users").document(uid).set(profile);
+                }
+                emitSignal("signed_in", uid, name, userEmail);
+            } else {
+                String err = task.getException() != null ? task.getException().getMessage() : "Email sign-in failed";
+                emitSignal("sign_in_failed", err != null ? err : "Email sign-in failed");
+            }
+        });
+    }
+
     @Override
     public void onMainActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode != RC_SIGN_IN) {

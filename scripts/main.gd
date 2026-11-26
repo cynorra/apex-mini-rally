@@ -515,7 +515,10 @@ func show_settings() -> void :
 			acc_box.add_child(arow)
 		else:
 			acc_box.add_child(UI.label(tr("Playing as Guest — sign in with Google to appear on the Global Leaderboard."), 15, Color(0.8, 0.85, 1)))
-			acc_box.add_child(UI.button("SIGN IN WITH GOOGLE", func(): Auth.sign_in(), 18, 280, "green"))
+			var srow: = UI.hbox(12)
+			srow.add_child(UI.button("SIGN IN WITH GOOGLE", func(): Auth.sign_in(), 18, 260, "green"))
+			srow.add_child(UI.button("EMAIL SIGN IN", _show_email_signin, 18, 190, "grey"))
+			acc_box.add_child(srow)
 		v.add_child(acc_box)
 		v.add_child(HSeparator.new())
 	for key in ["music", "sfx"]:
@@ -875,6 +878,28 @@ var garage_back: Callable = Callable()
 
 var _lb_track_idx: = 0
 var _lb_list_box: VBoxContainer = null
+
+
+func _show_email_signin() -> void :
+	Ads.set_banner_visible(false)
+	var layer: = CanvasLayer.new();layer.layer = 50;layer.name = "EmailSignIn";add_child(layer)
+	var dim: = ColorRect.new();dim.color = Color(0, 0, 0, 0.65);dim.set_anchors_preset(Control.PRESET_FULL_RECT);dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.add_child(dim)
+	var cc: = CenterContainer.new();cc.set_anchors_preset(Control.PRESET_FULL_RECT);dim.add_child(cc)
+	var p: = UI.panel(); var v: = UI.vbox(14);p.add_child(v);cc.add_child(p);p.custom_minimum_size.x = 460
+	v.add_child(UI.label(tr("EMAIL SIGN IN"), 26, Color(1, 0.82, 0.3)))
+	var email_in: = LineEdit.new();email_in.placeholder_text = "Email";email_in.custom_minimum_size = Vector2(400, 46);v.add_child(email_in)
+	var pass_in: = LineEdit.new();pass_in.placeholder_text = "Password";pass_in.secret = true;pass_in.custom_minimum_size = Vector2(400, 46);v.add_child(pass_in)
+	var restore_banner: = func():
+		var in_race: = race != null and is_instance_valid(race)
+		Ads.set_banner_visible(not in_race and screen != null and is_instance_valid(screen) and screen.name != "Results")
+	var row: = UI.hbox(16);row.alignment = BoxContainer.ALIGNMENT_CENTER;v.add_child(row)
+	row.add_child(UI.button("SIGN IN", func():
+		var em: String = email_in.text.strip_edges()
+		var pw: String = pass_in.text
+		layer.queue_free();restore_banner.call()
+		Auth.sign_in_email(em, pw), 20, 180, "green"))
+	row.add_child(UI.button("CANCEL", func(): layer.queue_free();restore_banner.call(), 20, 160, "grey"))
 
 
 func _on_auth_changed() -> void :

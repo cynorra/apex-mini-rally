@@ -54,6 +54,13 @@ func sign_in() -> void :
 	_plugin.sign_in_google()
 
 
+func sign_in_email(p_email: String, p_password: String) -> void :
+	if _plugin == null:
+		auth_error.emit("Email Sign-In is only available on Android.")
+		return
+	_plugin.sign_in_email(p_email, p_password)
+
+
 func sign_out() -> void :
 	if _plugin == null: return
 	_plugin.sign_out()
