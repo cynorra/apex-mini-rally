@@ -40,7 +40,7 @@ jobs:
           set -e
           export ANDROID_HOME=/usr/local/lib/android/sdk
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "build-tools;35.0.1" "platforms;android-35" "platforms;android-36" "cmake;3.10.2.4988404" "ndk;28.1.13356709" > /dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "build-tools;35.0.1" "build-tools;36.0.0" "platforms;android-35" "platforms;android-36" "cmake;3.10.2.4988404" "ndk;28.1.13356709" > /dev/null
           mkdir -p "$HOME/.config/godot"
           cat > "$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres" <<EOF
           [gd_resource type="EditorSettings" format=3]

@@ -121,6 +121,15 @@ def main() -> int:
     # Patch build.gradle
     patch_build_gradle(ANDROID_BUILD / "build.gradle")
 
+    # Ensure compileSdk & targetSdk are 36 (Google Play requirement) in config.gradle
+    config_gradle = ANDROID_BUILD / "config.gradle"
+    if config_gradle.exists():
+        cfg = config_gradle.read_text(encoding="utf-8")
+        cfg = re.sub(r"compileSdk\s*:\s*\d+", "compileSdk         : 36", cfg)
+        cfg = re.sub(r"targetSdk\s*:\s*\d+", "targetSdk          : 36", cfg)
+        config_gradle.write_text(cfg, encoding="utf-8")
+        print(f"[setup_firebase_android] Updated compileSdk/targetSdk=36 in {config_gradle}")
+
     # Find and patch AndroidManifest.xml
     manifest_candidates = [
         ANDROID_BUILD / "AndroidManifest.xml",
