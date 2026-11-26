@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003686518705",
+    "project_id": "mini-rally-game",
+    "storage_bucket": "mini-rally-game.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003686518705:android:6268bf7703d55e0a636790",
+        "android_client_info": {
+          "package_name": "com.cynorra.apexminirally"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABGKTT6fjs9DYjirzUB9gEPq_IaH7NlGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

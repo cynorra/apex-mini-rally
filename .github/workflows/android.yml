@@ -56,6 +56,7 @@ jobs:
           python3 scripts/patch_android_gles3_ubo.py "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_CHANNEL}"
           mkdir -p android/build
           unzip -q "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_CHANNEL}/android_source.zip" -d android/build
+          python3 scripts/setup_firebase_android.py
           python3 scripts/patch_android_gles3_ubo.py android/build
           echo "${GODOT_VERSION}.${GODOT_CHANNEL}" > android/.build_version
           touch android/build/.gdignore

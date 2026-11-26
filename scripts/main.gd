@@ -14,6 +14,10 @@ func _ready() -> void :
 		var a: = Progress.ach_def(id)
 		_toast("★ " + tr("Achievement: %s") % tr(a["name"]) + "  +$%d" % Progress.ACH_REWARD, true)
 		Sound.play("lap", 1.3))
+	Auth.auth_changed.connect(_on_auth_changed)
+	Auth.auth_error.connect( func(msg): _toast(msg, false))
+	Auth.account_deleted.connect( func(): _toast(tr("Google account deleted"), true))
+	Auth.leaderboard_loaded.connect(_on_leaderboard_loaded)
 	_make_backdrop()
 	show_title()
 	_warmup_paint()
@@ -106,13 +110,23 @@ func show_title() -> void :
 	var done: bool = Game.data["daily_done"] == Game.today()
 	row.add_child(UI.button("DAILY" + (" ✓" if done else ""), func(): _play_break(di["track"], "daily"), 22, 220, "yellow"))
 	v.add_child(row)
-	var row2: = UI.hbox(14);row2.alignment = BoxContainer.ALIGNMENT_CENTER
-	row2.add_child(UI.button("GARAGE", show_garage, 22, 200, "grey"))
-	var ab: = UI.button("AWARDS", show_achievements, 22, 200, "grey");ab.name = "Awards";row2.add_child(ab)
-	row2.add_child(UI.button("SETTINGS", show_settings, 22, 200, "grey"))
+	var row2: = UI.hbox(12);row2.alignment = BoxContainer.ALIGNMENT_CENTER
+	row2.add_child(UI.button("GARAGE", show_garage, 20, 165, "grey"))
+	var lb: = UI.button("RANKS", show_leaderboard, 20, 165, "yellow");lb.name = "Leaderboard";row2.add_child(lb)
+	var ab: = UI.button("AWARDS", show_achievements, 20, 165, "grey");ab.name = "Awards";row2.add_child(ab)
+	row2.add_child(UI.button("SETTINGS", show_settings, 20, 165, "grey"))
 	v.add_child(row2)
 	root.add_child(UI.center(v))
 	root.add_child(_coins_badge())
+	if Auth.available():
+		var auth_btn: Button
+		if Auth.signed_in:
+			var short_name: String = Auth.display_name.substr(0, 14)
+			auth_btn = UI.button("● " + short_name, show_settings, 16, 200, "green")
+		else:
+			auth_btn = UI.button("GOOGLE SIGN IN", Auth.sign_in, 16, 210, "grey")
+		auth_btn.position = Vector2(20, 20)
+		root.add_child(auth_btn)
 	var foot: = UI.label(tr("Daily Challenge: win on %s (%s) for +%d coins") % [Game.TRACKS[di["track"]]["name"], tr(String(di["weather"]).to_upper()), di["reward"]], 16, Color(0.85, 0.9, 1))
 	foot.set_anchors_preset(Control.PRESET_BOTTOM_LEFT);foot.position = Vector2(20, -36);foot.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	root.add_child(foot)
@@ -488,8 +502,22 @@ func _maybe_daily_login() -> void :
 
 func show_settings() -> void :
 	var s: Dictionary = Game.data["settings"]
-	var root: = Control.new();root.add_child(_title_label("SETTINGS"))
+	var root: = Control.new();root.name = "Settings";root.add_child(_title_label("SETTINGS"))
 	var p: = UI.panel(); var v: = UI.vbox(10);p.add_child(v);p.custom_minimum_size.x = 620
+	if Auth.available():
+		var acc_box: = UI.vbox(8)
+		acc_box.add_child(UI.label(tr("GOOGLE ACCOUNT (OPTIONAL)"), 20, Color(1, 0.82, 0.3)))
+		if Auth.signed_in:
+			acc_box.add_child(UI.label("%s  (%s)" % [Auth.display_name, Auth.email], 16, Color(0.7, 1, 0.75)))
+			var arow: = UI.hbox(12)
+			arow.add_child(UI.button("SIGN OUT", func(): Auth.sign_out(), 18, 190, "grey"))
+			arow.add_child(UI.red_button(tr("DELETE ACCOUNT"), func(): _confirm(tr("Delete your Google game account and leaderboard records permanently?"), func(): Auth.delete_account()), 18, 240))
+			acc_box.add_child(arow)
+		else:
+			acc_box.add_child(UI.label(tr("Playing as Guest — sign in with Google to appear on the Global Leaderboard."), 15, Color(0.8, 0.85, 1)))
+			acc_box.add_child(UI.button("SIGN IN WITH GOOGLE", func(): Auth.sign_in(), 18, 280, "green"))
+		v.add_child(acc_box)
+		v.add_child(HSeparator.new())
 	for key in ["music", "sfx"]:
 		var row: = UI.hbox(16); var l: = UI.label(key.to_upper(), 24);l.custom_minimum_size.x = 170;row.add_child(l)
 		var sl: = HSlider.new();sl.min_value = 0;sl.max_value = 1;sl.step = 0.05;sl.value = float(s[key]);sl.custom_minimum_size = Vector2(320, 40)
@@ -761,6 +789,8 @@ func _on_race_finished(res: Dictionary) -> void :
 	Game.data["xp"] = int(Game.data["xp"]) + int(res["xp"])
 	if res["mode"] != "elimination": Game.data["stars"][td["id"]] = max(int(Game.data["stars"].get(td["id"], 0)), int(res["stars"]))
 	if res["new_record"]: Game.data["best"][td["id"]] = res["time"]
+	if res["finished"] and float(res["time"]) > 0.0 and Auth.signed_in:
+		Auth.submit_score(String(td["id"]), float(res["time"]), String(Game.data["car"]))
 
 	var won: bool = res["finished"] and int(res["position"]) == 1 and res["mode"] in ["race", "daily", "elimination"]
 	if res["finished"]: Game.stat_add("races_done")
@@ -842,6 +872,83 @@ func show_results(res: Dictionary, unlocks: Array) -> void :
 	Sound.play("coin")
 
 var garage_back: Callable = Callable()
+
+var _lb_track_idx: = 0
+var _lb_list_box: VBoxContainer = null
+
+
+func _on_auth_changed() -> void :
+	if race != null and is_instance_valid(race): return
+	if screen == null or not is_instance_valid(screen): return
+	if Auth.signed_in:
+		_toast(tr("Signed in as %s") % Auth.display_name, true)
+	if screen.name == "Title":
+		show_title()
+	elif screen.name == "Settings":
+		show_settings()
+	elif screen.name == "Leaderboard":
+		show_leaderboard(_lb_track_idx)
+
+
+func show_leaderboard(track_idx: int = -1) -> void :
+	if track_idx >= 0 and track_idx < Game.TRACKS.size():
+		_lb_track_idx = track_idx
+	var td: Dictionary = Game.TRACKS[_lb_track_idx]
+	var root: = Control.new();root.name = "Leaderboard"
+	root.add_child(_title_label("LEADERBOARD"))
+	root.add_child(_coins_badge())
+	var outer: = UI.vbox(14);outer.alignment = BoxContainer.ALIGNMENT_CENTER
+
+	var nav_row: = UI.hbox(12);nav_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	nav_row.add_child(UI.button("<", func(): show_leaderboard((_lb_track_idx - 1 + Game.TRACKS.size()) % Game.TRACKS.size()), 22, 64, "grey"))
+	var tlabel: = UI.label("%s  (Cup %d)" % [td["name"], int(td.get("cup", 1))], 26, Color(1, 0.82, 0.3))
+	tlabel.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tlabel.custom_minimum_size.x = 340
+	nav_row.add_child(tlabel)
+	nav_row.add_child(UI.button(">", func(): show_leaderboard((_lb_track_idx + 1) % Game.TRACKS.size()), 22, 64, "grey"))
+	outer.add_child(nav_row)
+
+	if not Auth.signed_in:
+		var gpanel: = UI.panel(); var gv: = UI.hbox(16);gv.alignment = BoxContainer.ALIGNMENT_CENTER;gpanel.add_child(gv)
+		gv.add_child(UI.label(tr("Guest Mode: Sign in with Google to appear on the Global Leaderboard"), 16, Color(0.9, 0.92, 1)))
+		if Auth.available():
+			gv.add_child(UI.button("GOOGLE SIGN IN", func(): Auth.sign_in(), 16, 200, "green"))
+		outer.add_child(gpanel)
+
+	var lp: = UI.panel();lp.custom_minimum_size = Vector2(640, 320)
+	_lb_list_box = UI.vbox(8);lp.add_child(_lb_list_box)
+	_lb_list_box.add_child(UI.label(tr("Loading global rankings…") if Auth.available() else tr("Global Leaderboard is available on Android."), 18, Color(0.8, 0.85, 1)))
+	outer.add_child(lp)
+
+	_scroll_screen(root, outer, show_title, 90)
+	_set_screen(root)
+	if Auth.available():
+		Auth.fetch_leaderboard(String(td["id"]), 20)
+
+
+func _on_leaderboard_loaded(track_id: String, entries: Array) -> void :
+	if _lb_list_box == null or not is_instance_valid(_lb_list_box): return
+	var cur_id: String = String(Game.TRACKS[_lb_track_idx]["id"])
+	if track_id != cur_id: return
+	for ch in _lb_list_box.get_children():
+		ch.queue_free()
+	if entries.is_empty():
+		_lb_list_box.add_child(UI.label(tr("No records yet on this track. Be the first!"), 18, Color(0.8, 0.85, 1)))
+		return
+	for i in entries.size():
+		var e = entries[i]
+		if not (e is Dictionary): continue
+		var row: = UI.hbox(14)
+		var is_me: bool = Auth.signed_in and String(e.get("uid", "")) == Auth.uid
+		var rank_col: Color = Color(1, 0.82, 0.25) if i == 0 else (Color(0.82, 0.86, 0.95) if i == 1 else (Color(0.85, 0.55, 0.3) if i == 2 else Color(0.75, 0.8, 0.9)))
+		if is_me: rank_col = Color(0.45, 1, 0.6)
+		var rl: = UI.label("#%d" % (i + 1), 20, rank_col);rl.custom_minimum_size.x = 54;row.add_child(rl)
+		var nm: String = String(e.get("name", "Racer"))
+		if is_me: nm += " (YOU)"
+		var nl: = UI.label(nm, 20, rank_col if is_me else Color.WHITE);nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL;row.add_child(nl)
+		var t_sec: float = float(e.get("time_ms", 0)) / 1000.0
+		var tl: = UI.label(Race.fmt_time(t_sec), 20, Color(1, 0.85, 0.4));row.add_child(tl)
+		_lb_list_box.add_child(row)
 
 
 func _play_break(t: int, mode: String) -> void :
