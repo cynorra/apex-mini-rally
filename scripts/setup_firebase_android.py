@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ANDROID_BUILD = ROOT / "android" / "build"
 GOOGLE_SERVICES_SRC = ROOT / "firebase" / "google-services.json"
-PLUGIN_JAVA_SRC = ROOT / "firebase" / "android" / "MiniRallyAuthPlugin.java"
+PLUGIN_JAVA_SRC = ROOT / "firebase" / "java" / "MiniRallyAuthPlugin.java"
 
 
 def patch_build_gradle(gradle_path: Path) -> None:
